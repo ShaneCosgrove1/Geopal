@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+
+<style>
+table{border-collapse:separate;background:#fff;-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;width:100%;-moz-box-shadow:0 0 5px rgba(0,0,0,0.3);-webkit-box-shadow:0 0 5px rgba(0,0,0,0.3);box-shadow:0 0 5px rgba(0,0,0,0.3)}
+thead{-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px}
+thead th{font-size:24px;font-weight:400;color:#fff;text-shadow:1px 1px 0 rgba(0,0,0,0.5);text-align:left;padding:15px;background-color:gray}
+thead th:first-child{-moz-border-radius-topleft:5px;-webkit-border-top-left-radius:5px;border-top-left-radius:5px}
+thead th:last-child{-moz-border-radius-topright:5px;-webkit-border-top-right-radius:5px;border-top-right-radius:5px}
+tbody tr td{font-family:'Open Sans',sans-serif;font-weight:400;color:#5f6062;font-size:17px;padding:10px;border-bottom:1px solid #e0e0e0}
+tbody tr:nth-child(2n){background:#f0f3f5}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:last-child td:first-child{-moz-border-radius-bottomleft:5px;-webkit-border-bottom-left-radius:5px;border-bottom-left-radius:5px}
+tbody tr:last-child td:last-child{-moz-border-radius-bottomright:5px;-webkit-border-bottom-right-radius:5px;border-bottom-right-radius:5px}
+input{text-align:center}
+.ui-field-contain{padding:5px 10% 5px 10%!important}
+.card-header:first-child{border-radius:calc(.25rem - 1px) calc(.25rem - 1px) 0 0}
+.card-header{padding:.75rem 1.25rem;margin-bottom:0;background-color:rgba(0,0,0,.03);border-bottom:1px solid rgba(0,0,0,.125);font-size:23px}
+.card{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;
+-ms-flex-direction:column;flex-direction:column;min-width:0;word-wrap:break-word;background-color:#fff;
+background-clip:border-box;border:1px solid rgba(0,0,0,.125);border-radius:.25rem}
+</style>
+
+<meta charset="utf-16">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pump History</title>
+<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.3.min.css">
+<script src="js/jquery.js"></script> 
+<script src="js/jquery.mobile-1.4.3.min.js"></script>
+</head>
+	
+<body>
+<div data-role="page" id="page1">
+  <div data-role="header">
+    <h1> </h1>
+  </div>
+  <div role="main" class="ui-content">
+    <table id="demo">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th class="sortMe">Date</th>
+          <th >Hours</th>
+          <th>Amps</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <table id="rowTemplate" style="display:none">
+      <tr>
+        <td>{name}</td>
+        <td>{date}</td>
+        <td class="allHours">{hours}</td>
+        <td class="allAmps">{amps}</td>
+      </tr>
+    </table>
+	  <br>
+
+    <div style="width:">
+
+        <div class="card">
+            <div class="card-header">
+            Enter Hours and Amps 
+            </div>
+
+        <div class="ui-field-contain">
+            <label for="hoursInput">Enter Hours:</label>
+            <input align="center" style="text-align: center" type="number" name="hoursInput" id="hoursInput" value="" >
+        </div>
+        <div class="ui-field-contain">
+            <label for="ampsInput">Enter Amps:</label>
+            <input align="center" style="text-align: center" type="number" name="ampsInput" id="ampsInput" value="" >
+        </div>
+        </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

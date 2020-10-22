@@ -1,0 +1,127 @@
+/** This project will check if a template has a step called 'Filename Template'.
+ * 
+ * If it doesn't it will set the file name to the default format. Otherwise it
+ * will read in the new format and use that
+ * 
+ * @author: Brian Storrs
+ * @date:   12-10-2018
+ * 
+ * */
+ 
+
+var FORMAT_WORKFLOW = 'Filename Template';
+var format_to_parse = '%JOB_TEMPLATE_NAME% for %ASSET_IDENTIFIER% by  %ASSIGNED_TO_NAME% - Geopal %JOB_IDENTIFIER%';
+var use_default_text = true;
+//look up the job in question
+
+var job_data = JSON.parse(Geopal.Input.request('job-data'));
+var job_identifier = job_data.identifier;
+
+var job = Geopal.Job.getJobByIdentifier(job_identifier);
+var template_id = job.template_id;
+var template_name = '';
+
+var workflows = job.job_workflows;
+
+var all_templates = Geopal.Api.get('api/jobtemplates/all', Geopal.Employee.getIoTEmployee().id,{});
+all_templates = JSON.parse(all_templates.body).job_templates;
+
+
+for (var i = 0; i < all_templates.length; i++){
+    if (all_templates[i].job_template_id == template_id){
+        template_name = all_templates[i].name
+    }
+}
+
+var asset_identifier = job.asset_identifier;
+var assigned_to_name = job.assigned_to.first_name + '_' + job.assigned_to.last_name;
+
+// determine what the format should be.
+for (var i = 0; i < workflows.length; i++){
+    if (workflows[i].name == FORMAT_WORKFLOW){
+        format_to_parse = workflows[i].action_values
+        use_default_text = false
+    }
+}
+
+//remove the first and last items
+var getStepNames = function(matches){
+    var namesToFind = [];
+    for (var i = 0; i < matches.length; i++){
+        var current_name = matches[i].slice(1, -1)
+        namesToFind.push(current_name)
+    }
+    
+    return namesToFind
+}
+
+var createNameValues = function(steps, values2find){
+    
+    var values2names = {};
+    
+    for (var i = 0; i < steps.length; i++){
+        var step_name = steps[i].name;
+        var step_value = steps[i].action_value_entered;
+        for (var j = 0; j < values2find.length; j++){
+            current_field = values2find[j];
+            if (step_name == current_field){
+                values2names[current_field] = step_value
+            }
+        }
+    }
+    
+    return values2names
+}
+
+var fileName = format_to_parse;
+
+if (!use_default_text){
+    //check for field values (anything within [])
+    var workflows_regex = /\{(.*?)\}/gm;
+    var workflow_matches = format_to_parse.match(workflows_regex);
+    var workflows2find = getStepNames(workflow_matches);
+    var workflowValues = createNameValues(workflows, workflows2find);
+    
+    var fields = job.job_fields;
+    var fields_regex = /\[(.*?)\]/gm;
+    var field_matches = format_to_parse.match(fields_regex);
+    var fields2find = getStepNames(field_matches)
+    var fieldValues = createNameValues(fields, fields2find);
+    
+    for (var name in fieldValues){
+        fileName = fileName.replace('[' + name + ']' , fieldValues[name]);
+    }
+    
+    for (var name in workflowValues){
+        fileName = fileName.replace('{' + name + '}' , workflowValues[name]);
+    }
+}
+
+/*%JOB_TEMPLATE_NAME% for %ASSET_IDENTIFIER% by  %ASSIGNED_TO_NAME% - Geopal %JOB_IDENTIFIER%*/
+//check for template name
+fileName = fileName.replace('%JOB_TEMPLATE_NAME%' , template_name);
+//check for job identifier name
+fileName = fileName.replace('%JOB_IDENTIFIER%' , job_identifier);
+//check for asset identifier name
+fileName = fileName.replace('%ASSET_IDENTIFIER%' , asset_identifier);
+//check for assigned to name
+fileName = fileName.replace('%ASSIGNED_TO_NAME%' , assigned_to_name);
+
+var result = {
+    string: format_to_parse,
+    file_name: fileName
+};
+
+Geopal.Log.setExtraField3(fileName);
+Geopal.Output.printJson(result);
+
+
+//check for workflow values (anything with {})
+
+//check for template name, asset identifier, assigned to and job identifier
+
+
+
+
+ 
+ 
